@@ -58,6 +58,7 @@ api:
         422 - An **Unprocessable Entity** error will be returned
 
 server.port: 7001
+server.error.include-message: always
 app:
   product-service:
     host: localhost
@@ -81,7 +82,7 @@ spring:
 spring.config.activate.on-profile: docker
 
 server.port: 8080
-
+spring.mongodb.host: mongodb
 app:
   product-service:
     host: product

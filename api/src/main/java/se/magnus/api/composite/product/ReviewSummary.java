@@ -2,10 +2,10 @@ package se.magnus.api.composite.product;
 
 public class ReviewSummary {
 
-  private final int reviewId;
-  private final String author;
-  private final String subject;
-  private final String content;
+  private int reviewId;
+  private String author;
+  private String subject;
+  private String content;
 
   public ReviewSummary() {
     this.reviewId = 0;
