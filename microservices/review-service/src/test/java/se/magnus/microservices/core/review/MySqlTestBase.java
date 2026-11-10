@@ -2,7 +2,7 @@ package se.magnus.microservices.core.review;
 
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.mysql.MySQLContainer;
+import org.testcontainers.containers.MySQLContainer;
 
 public abstract class MySqlTestBase {
 

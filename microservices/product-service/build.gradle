@@ -18,6 +18,7 @@ repositories {
 }
 ext {
 	mapstructVersion = '1.6.3'
+	springCloudVersion = "2025.1.4"
 }
 
 dependencies {
@@ -28,7 +29,10 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation project(':api')
 	implementation project(':util')
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+	implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
+	testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-mongodb-test'
@@ -47,4 +51,10 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+	}
 }
