@@ -1,11 +1,17 @@
 server.port: 7002
-spring.web.error.include-message: always
-spring.data.mongodb.auto-index-creation: true
+spring.application.name: product
 
-spring.mongodb:
-  host: localhost
-  port: 27017
-  database: product-db
+app.eureka-server: localhost
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
 
 spring.cloud.function.definition: messageProcessor
 
@@ -47,17 +53,27 @@ logging:
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
+spring:
+  mongodb:
+    host: localhost
+    port: 27017
+    database: product-db
+  web:
+    error:
+      include-message: always
 ---
 spring.config.activate.on-profile: docker
 
 server.port: 8080
 
-spring.mongodb.host: mongodb
+app.eureka-server: eureka
 
 spring.rabbitmq.host: rabbitmq
 
 spring.cloud.stream.kafka.binder.brokers: kafka
-
+spring:
+  mongodb:
+    host: mongodb
 ---
 spring.config.activate.on-profile: streaming_partitioned
 
