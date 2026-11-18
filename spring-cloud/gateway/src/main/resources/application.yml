@@ -1,4 +1,14 @@
-server.port: 8080
+server.port: 8443
+
+spring.ssl.bundle.jks.gateway:
+  key:
+    alias: localhost
+  keystore:
+    type: PKCS12
+    location: classpath:keystore/edge.p12
+    password: password
+
+server.ssl.bundle: gateway
 
 spring.application.name: gateway
 
@@ -7,13 +17,16 @@ spring.application.name: gateway
 # For more information, see https://spring.io/security/cve-2025-41235
 spring.cloud.gateway.server.webflux.trusted-proxies: ".*"
 
+app.eureka-username: u
+app.eureka-password: p
 app.eureka-server: localhost
+app.auth-server: localhost
 app.httpstat-host: httpstat.us
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${app.eureka-server}:8761/eureka/
+      defaultZone: "http://${app.eureka-username}:${app.eureka-password}@${app.eureka-server}:8761/eureka/"
     initialInstanceInfoReplicationIntervalSeconds: 5
     registryFetchIntervalSeconds: 5
   instance:
@@ -26,6 +39,21 @@ spring.cloud.gateway.server.webflux.routes:
   uri: lb://product-composite
   predicates:
   - Path=/product-composite/**
+
+- id: oauth2-server
+  uri: lb://auth-server
+  predicates:
+  - Path=/oauth2/**
+
+- id: oauth2-login
+  uri: lb://auth-server
+  predicates:
+  - Path=/login/**
+
+- id: oauth2-error
+  uri: lb://auth-server
+  predicates:
+  - Path=/error/**
 
 - id: product-composite-swagger-ui
   uri: lb://product-composite
@@ -54,7 +82,7 @@ spring.cloud.gateway.server.webflux.routes:
 - id: host_route_200
   uri: http://${app.httpstat-host}
   predicates:
-  - Host=i.feel.lucky:8080
+  - Host=i.feel.lucky:8443
   - Path=/headerrouting/**
   filters:
   - SetPath=/200
@@ -62,7 +90,7 @@ spring.cloud.gateway.server.webflux.routes:
 - id: host_route_418
   uri: http://${app.httpstat-host}
   predicates:
-  - Host=im.a.teapot:8080
+  - Host=im.a.teapot:8443
   - Path=/headerrouting/**
   filters:
   - SetPath=/418
@@ -74,6 +102,8 @@ spring.cloud.gateway.server.webflux.routes:
   filters:
   - SetPath=/501
 
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://${app.auth-server}:9999
+
 management.endpoint.gateway.enabled: true
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
@@ -83,9 +113,11 @@ logging:
     root: INFO
     org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
     org.springframework.cloud.gateway: TRACE
+    org.springframework.web.server.adapter.HttpWebHandlerAdapter: TRACE
 
 ---
 spring.config.activate.on-profile: docker
 
 app.eureka-server: eureka
+app.auth-server: auth-server
 app.httpstat-host: httpstat

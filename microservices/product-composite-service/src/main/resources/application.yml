@@ -4,6 +4,16 @@ springdoc:
   packagesToScan: se.magnus.microservices.composite.product
   pathsToMatch: /**
 
+  swagger-ui:
+    oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
+    oauth:
+      clientId: writer
+      clientSecret: secret-writer
+      useBasicAuthenticationWithAccessCodeGrant: true
+  oAuthFlow:
+    authorizationUrl: https://localhost:8443/oauth2/authorize
+    tokenUrl: https://localhost:8443/oauth2/token
+
 api:
 
   common:
@@ -67,12 +77,15 @@ server.port: 7001
 server.forward-headers-strategy: framework
 spring.application.name: product-composite
 
+app.eureka-username: u
+app.eureka-password: p
 app.eureka-server: localhost
+app.auth-server: localhost
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${app.eureka-server}:8761/eureka/
+      defaultZone: "http://${app.eureka-username}:${app.eureka-password}@${app.eureka-server}:8761/eureka/"
     initialInstanceInfoReplicationIntervalSeconds: 5
     registryFetchIntervalSeconds: 5
   instance:
@@ -106,10 +119,13 @@ spring.rabbitmq:
   username: guest
   password: guest
 
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://${app.auth-server}:9999
+
 logging:
   level:
     root: INFO
     se.magnus: DEBUG
+    org.springframework.web.server.adapter.HttpWebHandlerAdapter: TRACE
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
@@ -123,6 +139,7 @@ spring.config.activate.on-profile: docker
 server.port: 8080
 
 app.eureka-server: eureka
+app.auth-server: auth-server
 
 spring.rabbitmq.host: rabbitmq
 
