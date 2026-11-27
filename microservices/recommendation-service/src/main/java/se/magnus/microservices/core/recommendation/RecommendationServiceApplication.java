@@ -13,6 +13,7 @@ import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.index.IndexResolver;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
+import org.springframework.data.mongodb.core.index.ReactiveIndexOperations;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 import se.magnus.microservices.core.recommendation.persistence.RecommendationEntity;
@@ -32,7 +33,7 @@ public class RecommendationServiceApplication {
 	}
 
 	@Autowired
-	MongoOperations mongoTemplate;
+	ReactiveMongoOperations mongoTemplate;
 
 	@EventListener(ContextRefreshedEvent.class)
 	public void initIndicesAfterStartup() {
